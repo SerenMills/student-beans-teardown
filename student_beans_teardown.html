@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Product Teardown: Student Beans — Seren Mills</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAF8F4;
+    --ink: #22262B;
+    --ink-soft: #565C63;
+    --rule: #DEDAD1;
+    --coral: #D65C4A;
+    --coral-soft: #F3DCD6;
+    --teal: #2F6E63;
+    --teal-soft: #DCE9E4;
+    --card-bg: #FFFFFF;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-sizing: border-box;
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --paper: #1B1D1F;
+      --ink: #EDEBE7;
+      --ink-soft: #A6A9AC;
+      --rule: #3A3C3E;
+      --coral: #E37B6B;
+      --coral-soft: #3A2A26;
+      --teal: #6FB3A4;
+      --teal-soft: #223330;
+      --card-bg: #24262A;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #1B1D1F;
+    --ink: #EDEBE7;
+    --ink-soft: #A6A9AC;
+    --rule: #3A3C3E;
+    --coral: #E37B6B;
+    --coral-soft: #3A2A26;
+    --teal: #6FB3A4;
+    --teal-soft: #223330;
+    --card-bg: #24262A;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  * { box-sizing: inherit; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 4.5rem 1.5rem 5rem;
+  }
+  @media (max-width: 600px) {
+    .wrap { padding: 3rem 1.25rem 4rem; }
+  }
+
+  .byline {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    margin-bottom: 0.9rem;
+  }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 2.5rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.9rem;
+    max-width: 15ch;
+  }
+  @media (max-width: 600px) {
+    h1 { font-size: 2rem; }
+  }
+  .intro {
+    font-size: 1.15rem;
+    color: var(--ink-soft);
+    max-width: 42ch;
+    margin: 0 0 3rem;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.5rem;
+    margin: 0 0 0.9rem;
+    letter-spacing: -0.005em;
+  }
+  section {
+    margin-top: 3.5rem;
+  }
+  p {
+    max-width: 62ch;
+    margin: 0 0 1rem;
+  }
+  .lede {
+    color: var(--ink-soft);
+  }
+
+  hr.rule {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 3.5rem 0 0;
+  }
+
+  /* --- Phone mock shared --- */
+  .phone-row {
+    display: flex;
+    gap: 1.75rem;
+    flex-wrap: wrap;
+    margin: 1.75rem 0 0.75rem;
+    align-items: flex-start;
+  }
+  .phone-frame {
+    width: 240px;
+    border-radius: 22px;
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    padding: 14px 12px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .phone-frame .app-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+    padding-left: 2px;
+  }
+  .offer-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 9px 10px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo-chip {
+    width: 26px; height: 26px;
+    border-radius: 7px;
+    flex-shrink: 0;
+  }
+  .offer-text { flex: 1; min-width: 0; }
+  .offer-name {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .offer-sub {
+    font-size: 0.64rem;
+    color: var(--ink-soft);
+  }
+  .badge {
+    font-size: 0.56rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 5px;
+    white-space: nowrap;
+  }
+  .badge-exclusive { background: var(--teal-soft); color: var(--teal); }
+  .badge-general { background: var(--rule); color: var(--ink-soft); }
+
+  .filter-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .filter-pill {
+    font-size: 0.62rem;
+    font-weight: 600;
+    padding: 5px 9px;
+    border-radius: 20px;
+    border: 1px solid var(--rule);
+    color: var(--ink-soft);
+  }
+  .filter-pill.active {
+    background: var(--teal);
+    color: #fff;
+    border-color: var(--teal);
+  }
+
+  .annot-wrap {
+    position: relative;
+  }
+  .annot-note {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--coral);
+    max-width: 190px;
+    line-height: 1.35;
+    padding-top: 6px;
+  }
+  .annot-note svg {
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .phone-caption {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    margin-top: 0.6rem;
+    text-align: center;
+  }
+  .phone-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* metrics */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  @media (max-width: 600px) {
+    .metrics { grid-template-columns: 1fr; }
+  }
+  .metric-card {
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 1.1rem 1.1rem 1.2rem;
+    background: var(--card-bg);
+  }
+  .metric-label {
+    font-family: 'Fraunces', serif;
+    font-size: 1.02rem;
+    margin: 0 0 0.4rem;
+    color: var(--ink);
+  }
+  .metric-desc {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  .closing {
+    background: var(--coral-soft);
+    border-radius: 14px;
+    padding: 1.6rem 1.75rem;
+    margin-top: 3.5rem;
+  }
+  .closing p {
+    margin: 0;
+    max-width: none;
+  }
+  .closing p + p { margin-top: 0.6rem; }
+
+  footer {
+    margin-top: 3.5rem;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+  footer a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-decoration-thickness: 1px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="byline">Product teardown &nbsp;·&nbsp; Seren Mills &nbsp;·&nbsp; September 2026</div>
+  <h1>Wait, do I actually get extra off this?</h1>
+  <p class="intro">A short teardown of Student Beans' discount feed — where it breaks down for users, and a simple fix.</p>
+
+  <section>
+    <h2>The problem</h2>
+    <p>Student Beans exists to give students a verified discount on top of what everyone else already gets. But the app's discount feed shows student-exclusive offers and standard, publicly available discounts in the exact same card style, in the same scrollable list — with no consistent way to tell them apart at a glance.</p>
+    <p class="lede">In practice, that means a verified student can open the app, tap into an offer, and still not be sure whether their verification is actually doing anything for them.</p>
+
+    <div class="phone-row">
+      <div class="phone-col">
+        <div class="phone-frame">
+          <div class="app-title">Offers for you</div>
+          <div class="offer-card">
+            <div class="logo-chip" style="background:#C9DCE8;"></div>
+            <div class="offer-text">
+              <div class="offer-name">10% off — Everyday Store</div>
+              <div class="offer-sub">Ends in 4 days</div>
+            </div>
+          </div>
+          <div class="offer-card">
+            <div class="logo-chip" style="background:#E3D3C4;"></div>
+            <div class="offer-text">
+              <div class="offer-name">Student rate — 20% off Coffee Co.</div>
+              <div class="offer-sub">Verified students only</div>
+            </div>
+          </div>
+          <div class="offer-card">
+            <div class="logo-chip" style="background:#D6E3C9;"></div>
+            <div class="offer-text">
+              <div class="offer-name">Free delivery — Home Basics</div>
+              <div class="offer-sub">Everyone, no code needed</div>
+            </div>
+          </div>
+          <div class="offer-card">
+            <div class="logo-chip" style="background:#E8CBC9;"></div>
+            <div class="offer-text">
+              <div class="offer-name">15% off — Fitness Plus</div>
+              <div class="offer-sub">Ends in 2 days</div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-caption">Current feed — no visual distinction</div>
+      </div>
+
+      <div class="annot-note">
+        <svg width="46" height="40" viewBox="0 0 46 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M40 8C34 3 22 1 13 6C4 11 2 22 8 28C14 34 27 35 35 30C41 26 42 17 37 13" stroke="var(--coral)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M30 11L37 13L36 6" stroke="var(--coral)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        Three of these look identical — but only one needs my student verification to unlock.
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <h2>Why it matters</h2>
+    <p>This isn't just a cosmetic gap. Verification is the one thing Student Beans asks of a user and the one thing that differentiates it from a generic voucher app. If a student can't tell whether verifying actually earned them anything extra, the app's core value proposition quietly stops registering — even while the discounts themselves are perfectly real.</p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <h2>The fix</h2>
+    <p>Two small changes: a consistent badge that marks which offers are student-exclusive, and a filter so a user can see only the offers their verification actually unlocks.</p>
+
+    <div class="phone-row">
+      <div class="phone-col">
+        <div class="phone-frame">
+          <div class="app-title">Offers for you</div>
+          <div class="filter-row">
+            <div class="filter-pill">All offers</div>
+            <div class="filter-pill active">Student exclusive</div>
+          </div>
+          <div class="offer-card">
+            <div class="logo-chip" style="background:#E3D3C4;"></div>
+            <div class="offer-text">
+              <div class="offer-name">20% off — Coffee Co.</div>
+              <div class="offer-sub">Verified students only</div>
+            </div>
+            <div class="badge badge-exclusive">Exclusive</div>
+          </div>
+          <div class="offer-card">
+            <div class="logo-chip" style="background:#D8C9E3;"></div>
+            <div class="offer-text">
+              <div class="offer-name">25% off — Print Shop</div>
+              <div class="offer-sub">Verified students only</div>
+            </div>
+            <div class="badge badge-exclusive">Exclusive</div>
+          </div>
+        </div>
+        <div class="phone-caption">Filtered to exclusive offers only</div>
+      </div>
+
+      <div class="phone-col">
+        <div class="phone-frame">
+          <div class="app-title">Offers for you</div>
+          <div class="filter-row">
+            <div class="filter-pill active">All offers</div>
+            <div class="filter-pill">Student exclusive</div>
+          </div>
+          <div class="offer-card">
+            <div class="logo-chip" style="background:#C9DCE8;"></div>
+            <div class="offer-text">
+              <div class="offer-name">10% off — Everyday Store</div>
+              <div class="offer-sub">Ends in 4 days</div>
+            </div>
+            <div class="badge badge-general">General</div>
+          </div>
+          <div class="offer-card">
+            <div class="logo-chip" style="background:#E3D3C4;"></div>
+            <div class="offer-text">
+              <div class="offer-name">20% off — Coffee Co.</div>
+              <div class="offer-sub">Verified students only</div>
+            </div>
+            <div class="badge badge-exclusive">Exclusive</div>
+          </div>
+          <div class="offer-card">
+            <div class="logo-chip" style="background:#D6E3C9;"></div>
+            <div class="offer-text">
+              <div class="offer-name">Free delivery — Home Basics</div>
+              <div class="offer-sub">Everyone, no code needed</div>
+            </div>
+            <div class="badge badge-general">General</div>
+          </div>
+        </div>
+        <div class="phone-caption">All offers — now clearly labelled</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <h2>How I'd know it worked</h2>
+    <p class="lede">Three signals I'd track after shipping this, in order of how directly they measure the actual confusion:</p>
+    <div class="metrics">
+      <div class="metric-card">
+        <p class="metric-label">Redemption rate</p>
+        <p class="metric-desc">Uplift in redemptions on badged "exclusive" offers, since users can now find them without hunting.</p>
+      </div>
+      <div class="metric-card">
+        <p class="metric-label">Support queries</p>
+        <p class="metric-desc">Drop in tickets mentioning confusion over discount eligibility or verification value.</p>
+      </div>
+      <div class="metric-card">
+        <p class="metric-label">Clarity score</p>
+        <p class="metric-desc">A short in-app survey asking users if they can tell which offers need verification — before and after.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="closing">
+    <p>This is a small interaction problem, not a redesign — which is exactly why it's easy to miss and cheap to fix.</p>
+    <p>It's also the kind of gap I look for by default: the product is doing its job, but the interface isn't telling the user it's working.</p>
+  </div>
+
+  <footer>
+    Seren Mills — <a href="mailto:sezzymills@gmail.com">sezzymills@gmail.com</a>
+  </footer>
+
+</div>
+</body>
+</html>
